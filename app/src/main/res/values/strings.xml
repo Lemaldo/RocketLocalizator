@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">RocketLocalizator</string>
+
+    <string name="edit_number">Guessing Game</string>
+    <string name="button_send">Send</string>
+    <string name="edit_write_number">Write a number here</string>
+    <string name="random_button">START</string>
+    <string name="Score">0</string>
+    <string name="Rounds">0</string>
+    <string name="Rounds_text">Round:</string>
+    <string name="Score_text">Score:</string>
+    <string name="message"></string>
+    <string name="welcome_text">Welcome to my app</string>
+    <string name="loginMainText">Sign in or sign up</string>
+    <string name="enterLoginText">Enter login</string>
+    <string name="loginText">Enter login to sign in or sign up</string>
+    <string name="signUpButton">Sign up</string>
+    <string name="signInButton">Sign in</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="goBackToGameButton">Back</string>
+    <string name="leaderboardLogin">Login</string>
+    <string name="LeaderboardScore">Score</string>
+    <string name="reset_button">Leaderboard</string>
 </resources>
