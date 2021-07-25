@@ -6,10 +6,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
-import com.example.rocketlocalizator.LogOrRegister
-
-import kotlin.random.Random
 
 
 class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
@@ -73,6 +69,9 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(COL_LATITUDE, latitude)
         values.put(COL_LONGITUDE, longitude)
 
+        db.insert(FLIGHTS_TABLE_NAME, null, values)
+        db.close()
+
 
     }
 
@@ -86,6 +85,19 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
             }
         }
         return false
+    }
+
+    fun getLocationFromId(id: Double) : Pair<Double, Double> {
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+        val selectQuery = "SELECT * FROM $FLIGHTS_TABLE_NAME WHERE $COL_ID_FLIGHT = '$id'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+        if (cursor.moveToFirst()) {
+            latitude = cursor.getDouble(cursor.getColumnIndex(COL_LATITUDE))
+            longitude = cursor.getDouble(cursor.getColumnIndex(COL_LONGITUDE))
+        }
+        return Pair(latitude,longitude)
     }
 
 

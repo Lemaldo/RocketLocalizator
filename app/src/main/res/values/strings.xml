@@ -21,4 +21,5 @@
     <string name="leaderboardLogin">Login</string>
     <string name="LeaderboardScore">Score</string>
     <string name="reset_button">Leaderboard</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
