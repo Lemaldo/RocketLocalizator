@@ -1,18 +1,14 @@
 package com.example.rocketlocalizator
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import androidx.core.app.ActivityCompat
+import androidx.annotation.RequiresApi
 import com.example.rocketlocalizator.Database.DBHelper
 import com.example.rocketlocalizator.databinding.ActivityMapsBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.math.log
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -28,6 +25,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,14 +42,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         finishButton.setOnClickListener(){
-            val idFlight = 1
+
+            var idFlight = 0.0
+            var login = ""
+            val intentExtras = intent.extras
+            if (intentExtras != null) {
+                idFlight = intentExtras.getInt("ID_FLIGHT").toDouble()
+                login = intentExtras.getString("LOGIN").toString()
+
+            }
+
+
 
             val db = DBHelper(this)
-            val latitude = 40.7127281
-            val longitude = -74.0060152
-            //db.addLL(idFlight, latitude, longitude)
+
+            db.addFound(idFlight, login)
             val intent = Intent(this, FoundRocket::class.java)
-            intent.putExtra("ID_FLIGHT", idFlight)
             startActivity(intent)
             finish()
             onStop()
