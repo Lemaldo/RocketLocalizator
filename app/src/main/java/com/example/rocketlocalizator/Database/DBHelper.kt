@@ -6,6 +6,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+
 
 
 class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
@@ -38,7 +44,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         db!!.execSQL(CREATE_TABLE_USERS)
 
         val CREATE_TABLE_FLIGHTS =
-            ("CREATE TABLE $FLIGHTS_TABLE_NAME ($COL_ID_FLIGHT INTEGER PRIMARY KEY AUTOINCREMENT, $COL_LATITUDE DOUBLE, $COL_LONGITUDE DOUBLE, $COL_TIMESTAMP DATE)")
+            ("CREATE TABLE $FLIGHTS_TABLE_NAME ($COL_ID_FLIGHT INTEGER PRIMARY KEY AUTOINCREMENT, $COL_LATITUDE DOUBLE, $COL_LONGITUDE DOUBLE, $COL_TIMESTAMP TEXT")
         db!!.execSQL(CREATE_TABLE_FLIGHTS)
     }
 
@@ -60,6 +66,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         db.close()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addLL(idFlight: Int, latitude: Double, longitude: Double ){
         val db = this.writableDatabase
 
@@ -68,11 +75,40 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(COL_ID_FLIGHT,idFlight)
         values.put(COL_LATITUDE, latitude)
         values.put(COL_LONGITUDE, longitude)
+        val now = LocalDateTime.now().toString()
+        val formatter = DateTimeFormatter.ofPattern("%H:%M:%S")
+        val dateFormatted = now.format(formatter)
+        values.put(COL_TIMESTAMP, dateFormatted)
 
         db.insert(FLIGHTS_TABLE_NAME, null, values)
         db.close()
 
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addFound(idFlight: Double, login: String){
+        val selectQuery = "SELECT $COL_TIMESTAMP FROM $FLIGHTS_TABLE_NAME WHERE $COL_ID_FLIGHT = '$idFlight'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+        if (cursor.moveToFirst()) {
+            val time = cursor.getString(cursor.getColumnIndex(COL_TIMESTAMP)).toString()
+
+            val db2 = this.writableDatabase
+            val values2 = ContentValues()
+            //TODO
+            val now = LocalDateTime.now().toString()
+            val formatter = DateTimeFormatter.ofPattern("%H:%M:%S")
+            val dateFormatted = now.format(formatter)
+
+   
+            val score = "$dateFormatted - $time"
+            values2.put(COL_LOGIN, login)
+            values2.put(COL_SCORE, score)
+
+            db2.insert(USERS_TABLE_NAME, null, values2)
+            db2.close()
+        }
     }
 
     fun testUserInDB(userName: String): Boolean {
