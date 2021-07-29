@@ -19,6 +19,7 @@ class LogOrRegister : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_or_register)
 
+
         val signInButton = findViewById<Button>(R.id.button4)
 
         val signUpButton = findViewById<Button>(R.id.button5)

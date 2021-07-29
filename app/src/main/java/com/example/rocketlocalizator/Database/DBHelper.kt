@@ -7,11 +7,14 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-
+import java.util.*
 
 
 class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
@@ -75,10 +78,10 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         values.put(COL_ID_FLIGHT,idFlight)
         values.put(COL_LATITUDE, latitude)
         values.put(COL_LONGITUDE, longitude)
-        val now = LocalDateTime.now().toString()
-        val formatter = DateTimeFormatter.ofPattern("%H:%M:%S")
-        val dateFormatted = now.format(formatter)
-        values.put(COL_TIMESTAMP, dateFormatted)
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("hh:mm:ss")
+
+        values.put(COL_TIMESTAMP, now.format(formatter))
 
         db.insert(FLIGHTS_TABLE_NAME, null, values)
         db.close()
@@ -92,17 +95,15 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         val db = this.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)
         if (cursor.moveToFirst()) {
-            val time = cursor.getString(cursor.getColumnIndex(COL_TIMESTAMP)).toString()
+            val time = cursor.getString(cursor.getColumnIndex(COL_TIMESTAMP))
 
             val db2 = this.writableDatabase
             val values2 = ContentValues()
-            //TODO
-            val now = LocalDateTime.now().toString()
-            val formatter = DateTimeFormatter.ofPattern("%H:%M:%S")
-            val dateFormatted = now.format(formatter)
 
-   
-            val score = "$dateFormatted - $time"
+            val now = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("hh:mm:ss")
+
+            val score = calcScore(now.format(formatter),time.format(formatter))
             values2.put(COL_LOGIN, login)
             values2.put(COL_SCORE, score)
 
@@ -135,6 +136,22 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         }
         return Pair(latitude,longitude)
     }
+
+    fun calcScore(now: String, then: String): String{
+        val hoursNow = now.substring(0,2)
+        val hoursThen = then.substring(0,2)
+
+        val minuteNow = now.substring(3,5)
+        val minuteThen = then.substring(3,5)
+
+        val hoursInterval = (hoursNow.toInt() - hoursThen.toInt()) * 60
+        val minutesInterval = minuteNow.toInt() - minuteThen.toInt()
+        val score = hoursInterval + minutesInterval
+        return "$score minutes"
+    }
+
+
+
 
 
 }
