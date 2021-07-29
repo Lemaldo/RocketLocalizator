@@ -30,7 +30,7 @@ class HistoryAndStatistics : AppCompatActivity() {
             // longitude -180:0 West 0:180 East
 
 
-            val idFlight = 9
+            val idFlight = 11
 
             val db = DBHelper(this)
             val latitude = 40.7127281
