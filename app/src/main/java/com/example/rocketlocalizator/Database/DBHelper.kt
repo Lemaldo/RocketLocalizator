@@ -176,6 +176,17 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         return "$score minutes"
     }
 
+    fun getScore(userName: String): String? {
+        val selectQuery = "SELECT $COL_SCORE FROM $USERS_TABLE_NAME WHERE $COL_LOGIN = '$userName'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+        if (cursor.moveToLast()) {
+                return cursor.getString(cursor.getColumnIndex(COL_SCORE))
+
+        }
+        return "error"
+    }
+
 
 
 

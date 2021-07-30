@@ -22,4 +22,6 @@
     <string name="LeaderboardScore">Score</string>
     <string name="reset_button">Leaderboard</string>
     <string name="title_activity_maps">Map</string>
+    <string name="facebook_app_id">972348330214829</string>
+    <string name="facebook_client_token">5c79560f2f5e1c4ecbf2d75eeb5da068</string>
 </resources>

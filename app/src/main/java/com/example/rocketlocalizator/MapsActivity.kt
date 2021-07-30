@@ -58,6 +58,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             db.addFound(idFlight, login)
             val intent = Intent(this, FoundRocket::class.java)
+            intent.putExtra("LOGIN", login)
             startActivity(intent)
             finish()
             onStop()

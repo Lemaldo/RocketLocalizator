@@ -90,6 +90,7 @@ class HistoryAndStatistics : AppCompatActivity(){
 
 
 
+
             val db = DBHelper(this)
 //            val idFlight = db.getIDFlight()
 
