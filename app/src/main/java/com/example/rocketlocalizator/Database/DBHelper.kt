@@ -20,6 +20,8 @@ import java.util.*
 class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
     null, DATABASE_VER
 ) {
+
+
     companion object {
         private val DATABASE_VER = 2
         private val DATABASE_NAME = "Users.db"
@@ -42,12 +44,15 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
 
 
     override fun onCreate(db: SQLiteDatabase?) {
+
+
+
         val CREATE_TABLE_USERS =
             ("CREATE TABLE $USERS_TABLE_NAME ($COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_LOGIN TEXT, $COL_SCORE TEXT)")
         db!!.execSQL(CREATE_TABLE_USERS)
 
         val CREATE_TABLE_FLIGHTS =
-            ("CREATE TABLE $FLIGHTS_TABLE_NAME ($COL_ID_FLIGHT INTEGER PRIMARY KEY AUTOINCREMENT, $COL_LATITUDE DOUBLE, $COL_LONGITUDE DOUBLE, $COL_TIMESTAMP TEXT")
+            ("CREATE TABLE $FLIGHTS_TABLE_NAME ($COL_ID_FLIGHT INTEGER PRIMARY KEY AUTOINCREMENT, $COL_LATITUDE DOUBLE, $COL_LONGITUDE DOUBLE, $COL_TIMESTAMP TEXT)")
         db!!.execSQL(CREATE_TABLE_FLIGHTS)
     }
 
@@ -69,6 +74,26 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         db.close()
     }
 
+
+    fun getIDFlight(): Int {
+        val idFlight = 0
+        val selectQuery = "SELECT max($COL_ID_FLIGHT) FROM $FLIGHTS_TABLE_NAME "
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+
+        return if (cursor != null) {
+            cursor.moveToFirst()
+            cursor.getInt(0)
+
+
+        } else {
+            idFlight
+        }
+
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun addLL(idFlight: Int, latitude: Double, longitude: Double ){
         val db = this.writableDatabase
@@ -76,12 +101,13 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,
         val values = ContentValues()
 
         values.put(COL_ID_FLIGHT,idFlight)
-        values.put(COL_LATITUDE, latitude)
         values.put(COL_LONGITUDE, longitude)
         val now = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("hh:mm:ss")
 
         values.put(COL_TIMESTAMP, now.format(formatter))
+        values.put(COL_LATITUDE, latitude)
+
 
         db.insert(FLIGHTS_TABLE_NAME, null, values)
         db.close()
